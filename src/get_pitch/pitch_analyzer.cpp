@@ -12,6 +12,19 @@ namespace upc {
 
     for (unsigned int l = 0; l < r.size(); ++l) {
   		/// \TODO Compute the autocorrelation r[l]
+
+      /** 
+       * \DONE Autocorrelation computated.
+       * - Autocorrelation set to 0.
+       * - Autocorrelation acumulated for all the signal.
+       * - Autocorrelation divided by length.
+      */
+
+      r[l] = 0;
+      for (unsigned int n = l; n < x.size(); n++){
+        r[l] += x[n]*x[n-l];
+      }
+      r[l] /= x.size();
     }
 
     if (r[0] == 0.0F) //to avoid log() and divide zero 
@@ -27,6 +40,7 @@ namespace upc {
     switch (win_type) {
     case HAMMING:
       /// \TODO Implement the Hamming window
+        window.assign(framelen, 1); //Eliminar más tarde//
       break;
     case RECT:
     default:
@@ -54,6 +68,7 @@ namespace upc {
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
+    //Compute pitch calcula lla autocorrelación
     if (x.size() != frameLen)
       return -1.0F;
 
