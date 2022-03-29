@@ -25,6 +25,7 @@ Usage:
     get_pitch --version
 
 Options:
+    -m FLOAT, --umaxnorm = FLOAT  Long-term autocorrelation threshold [default: 0.5]
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -39,13 +40,16 @@ int main(int argc, const char *argv[]) {
 	/// \TODO 
 	///  Modify the program syntax and the call to **docopt()** in order to
 	///  add options and arguments to the program.
+  
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
         {argv + 1, argv + argc},	// array of arguments, without the program name
         true,    // show help if requested
         "2.0");  // version string
+        //El docopt devuelve un mapa.
 
 	std::string input_wav = args["<input-wav>"].asString();
 	std::string output_txt = args["<output-txt>"].asString();
+  float umaxnorm = stof(args["--umaxnorm"].asString()); // Siempre accedemos con la key larga.
 
   // Read input sound file
   unsigned int rate;
@@ -59,7 +63,7 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, 50, 500);
+  PitchAnalyzer analyzer(n_len, rate, umaxnorm, PitchAnalyzer::HAMMING, 50, 500);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,

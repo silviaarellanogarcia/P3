@@ -40,7 +40,7 @@ namespace upc {
     switch (win_type) {
     case HAMMING:
       /// \TODO Implement the Hamming window
-        window.assign(framelen, 1); //Eliminar más tarde//
+        window.assign(frameLen, 1); //Eliminar más tarde//
       break;
     case RECT:
     default:
@@ -64,7 +64,10 @@ namespace upc {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
-    return true;
+    
+    if(rmaxnorm>umaxnorm) return false; //Autocorrelación en el candidato a pitch.
+    //if(r1norm > 0.6) return false;
+    return true; //Considera que todas las tramas son sordas.
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
@@ -91,21 +94,24 @@ namespace upc {
     ///	   .
 	/// In either case, the lag should not exceed that of the minimum value of the pitch.
 
-    unsigned int lag = iRMax - r.begin();
+    for(iR = iRMax =  r.begin() + npitch_min; iR < r.begin() + npitch_max; iR++){
+      if(*iR > * iRMax) iRMax = iR; //Localizamos el máximo
+    }
+    unsigned int lag = iRMax - r.begin(); //Cálculo de la posición del pico
 
-    float pot = 10 * log10(r[0]);
+    float pot = 10 * log10(r[0]); 
 
     //You can print these (and other) features, look at them using wavesurfer
     //Based on that, implement a rule for unvoiced
     //change to #if 1 and compile
-#if 0
+#if 0 //Este if 0 sirve para ver la forma de la autocorrelación. Si ponemos if 1 veremos los valores en pantalla
     if (r[0] > 0.0F)
       cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
 #endif
     
     if (unvoiced(pot, r[1]/r[0], r[lag]/r[0]))
-      return 0;
+      return 0; // 0 indica trama sorda
     else
-      return (float) samplingFreq/(float) lag;
+      return (float) samplingFreq/(float) lag; // Si es sonora, se devuelve la frecuencia de pitch del máximo de la autocorrelaación en Hz
   }
 }
