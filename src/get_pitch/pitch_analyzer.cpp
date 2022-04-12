@@ -40,7 +40,13 @@ namespace upc {
     switch (win_type) {
     case HAMMING:
       /// \TODO Implement the Hamming window
-        window.assign(frameLen, 1); //Eliminar más tarde//
+        for(unsigned int i=0; i<frameLen; i++){
+          window[i] = 0.53836 - 0.46164*cos(2*M_PI*i/(frameLen - 1)); // https://es.wikipedia.org/wiki/Ventana_(funci%C3%B3n)#Hamming
+        }
+      /** 
+       * \DONE Hamming window implemented
+       * - It has been used the formula given by https://es.wikipedia.org/wiki/Ventana_(funci%C3%B3n)#Hamming
+      */
       break;
     case RECT:
     default:
