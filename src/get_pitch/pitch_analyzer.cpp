@@ -45,7 +45,7 @@ namespace upc {
         }
       /** 
        * \DONE Hamming window implemented
-       * - It has been used the formula given by https://es.wikipedia.org/wiki/Ventana_(funci%C3%B3n)#Hamming
+       * - We have used the formula given by https://es.wikipedia.org/wiki/Ventana_(funci%C3%B3n)#Hamming
       */
       break;
     case RECT:
@@ -71,13 +71,13 @@ namespace upc {
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
     
-    if(rmaxnorm>umaxnorm) return false; //Autocorrelación en el candidato a pitch.
-    //if(r1norm > 0.6) return false;
+    if(rmaxnorm>umaxnorm && r1norm > 0.9) return false; //Autocorrelación en el candidato a pitch.
+
     return true; //Considera que todas las tramas son sordas.
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
-    //Compute pitch calcula lla autocorrelación
+    //Compute pitch calcula la autocorrelación
     if (x.size() != frameLen)
       return -1.0F;
 
@@ -100,10 +100,18 @@ namespace upc {
     ///	   .
 	/// In either case, the lag should not exceed that of the minimum value of the pitch.
 
-    for(iR = iRMax =  r.begin() + npitch_min; iR < r.begin() + npitch_max; iR++){
-      if(*iR > * iRMax) iRMax = iR; //Localizamos el máximo
+    for(iR = iRMax =  r.begin() + npitch_min; iR < r.begin() + npitch_max; iR++){ // The maximum has to be located between the minimum and maximum pitch, so it is a reasonable value.
+      // begin() is used to return an iterator pointing to the first element of the vector container
+      if(*iR > * iRMax) iRMax = iR; //Localizamos el máximo --> Se actualiza iRMax si el valor concreto que se está estudiando en ese momento es mayor.
     }
-    unsigned int lag = iRMax - r.begin(); //Cálculo de la posición del pico
+    unsigned int lag = iRMax - r.begin(); // Cálculo del desplazamiento del pico
+
+    /** 
+      * \DONE Lag of the maximum value computed
+      * - Iteration through the autocorrelation's vector.
+      * - Selection of the highest value while iterating.
+      * - Difference between the highest value's position and the initial position.
+    */
 
     float pot = 10 * log10(r[0]); 
 
