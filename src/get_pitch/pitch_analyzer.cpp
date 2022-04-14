@@ -71,9 +71,10 @@ namespace upc {
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
     
-    if(rmaxnorm>umaxnorm && r1norm > 0.9) return false; //Autocorrelación en el candidato a pitch.
-
+    if(rmaxnorm>umaxnorm && r1norm > r1thr && pot > -53.0F) return false; //Autocorrelación en el candidato a pitch.
     return true; //Considera que todas las tramas son sordas.
+
+    /// \DONE
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {

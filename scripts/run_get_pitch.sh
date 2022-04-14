@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Put here the program (maybe with path)
-GETF0="get_pitch --umaxnorm=0.4" #Con  0,5 va mejor
+GETF0="get_pitch --umaxnorm=0.35 --r1norm=0.55"
 
 for fwav in pitch_db/train/*.wav; do
     ff0=${fwav/.wav/.f0}

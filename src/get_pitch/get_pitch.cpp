@@ -25,7 +25,8 @@ Usage:
     get_pitch --version
 
 Options:
-    -m FLOAT, --umaxnorm = FLOAT  Long-term autocorrelation threshold [default: 0.5]
+    -m FLOAT, --umaxnorm = FLOAT  Long-term autocorrelation threshold [default: 0.4]
+    -r FLOAT, --r1norm = FLOAT  R(1)/R(0) autocorrelation threshold [default: 0.6]
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -50,6 +51,8 @@ int main(int argc, const char *argv[]) {
 	std::string input_wav = args["<input-wav>"].asString();
 	std::string output_txt = args["<output-txt>"].asString();
   float umaxnorm = stof(args["--umaxnorm"].asString()); // Siempre accedemos con la key larga.
+  float r1norm = stof(args["--r1norm"].asString());
+  std::cout << r1norm;
 
   // Read input sound file
   unsigned int rate;
@@ -63,12 +66,22 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, umaxnorm, PitchAnalyzer::HAMMING, 50, 500);
+  PitchAnalyzer analyzer(n_len, rate, umaxnorm, r1norm, PitchAnalyzer::HAMMING, 50, 500);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
   
+  float max = *std::max_element(x.begin(), x.end());
+  float min = *std::min_element(x.begin(), x.end());
+
+  for(int i = 0; i < (int)x.size(); i++) {
+    if(x[i] < 0.025*max && x[i] > 0.025*min) {
+      x[i] = 0.0F;
+    }
+  }
+  /// \DONE
+
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
   vector<float> f0;
@@ -80,6 +93,19 @@ int main(int argc, const char *argv[]) {
   /// \TODO
   /// Postprocess the estimation in order to supress errors. For instance, a median filter
   /// or time-warping may be used.
+  vector<float> f0_final(f0.size());
+  vector<float> temp(3);
+  int i;
+  f0_final[0] = f0[0];
+  for(i = 1; i < (int)(f0.size() - 1); i++) {
+    temp = {f0[i-1], f0[i], f0[i+1]};
+    auto m = temp.begin() + temp.size()/2;
+    std::nth_element(temp.begin(), m, temp.end());
+    f0_final[i] = temp[temp.size()/2];
+  }
+  f0_final[i] = f0[i];
+  /// \DONE
+  /// Median filter computed
 
   // Write f0 contour into the output file
   ofstream os(output_txt);
@@ -89,7 +115,7 @@ int main(int argc, const char *argv[]) {
   }
 
   os << 0 << '\n'; //pitch at t=0
-  for (iX = f0.begin(); iX != f0.end(); ++iX) 
+  for (iX = f0_final.begin(); iX != f0_final.end(); ++iX) 
     os << *iX << '\n';
   os << 0 << '\n';//pitch at t=Dur
 
