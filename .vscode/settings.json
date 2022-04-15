@@ -16,6 +16,9 @@
         "unordered_map": "cpp",
         "unordered_set": "cpp",
         "valarray": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "bitset": "cpp",
+        "stack": "cpp",
+        "utility": "cpp"
     }
 }

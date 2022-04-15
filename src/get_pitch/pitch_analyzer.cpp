@@ -74,7 +74,10 @@ namespace upc {
     if(rmaxnorm>umaxnorm && r1norm > r1thr && pot > -53.0F) return false; //Autocorrelación en el candidato a pitch.
     return true; //Considera que todas las tramas son sordas.
 
-    /// \DONE
+    /** 
+     * \DONE Criteria for differencing between voiced/unvoiced established
+     * It has been considered the autocorrelation at long term, the relation R(1)/R(0) and the power.
+    */
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
