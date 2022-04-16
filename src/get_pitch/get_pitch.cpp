@@ -27,6 +27,8 @@ Usage:
 Options:
     -m FLOAT, --umaxnorm = FLOAT  Long-term autocorrelation threshold [default: 0.4]
     -r FLOAT, --r1norm = FLOAT  R(1)/R(0) autocorrelation threshold [default: 0.6]
+    -c FLOAT, --cclipping FLOAT  Center-clipping threshold in terms of max/min values [default: 0.025]
+    -p FLOAT, --powthr FLOAT  Power threshold [default: -55]
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -52,6 +54,8 @@ int main(int argc, const char *argv[]) {
 	std::string output_txt = args["<output-txt>"].asString();
   float umaxnorm = stof(args["--umaxnorm"].asString()); // Siempre accedemos con la key larga.
   float r1norm = stof(args["--r1norm"].asString());
+  float cclipping = stof(args["--cclipping"].asString());
+  float powthr = stof(args["--powthr"].asString());
   std::cout << r1norm;
 
   // Read input sound file
@@ -66,7 +70,7 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, umaxnorm, r1norm, PitchAnalyzer::HAMMING, 50, 500);
+  PitchAnalyzer analyzer(n_len, rate, umaxnorm, r1norm, powthr, PitchAnalyzer::HAMMING, 50, 500);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
@@ -76,7 +80,7 @@ int main(int argc, const char *argv[]) {
   float min = *std::min_element(x.begin(), x.end());
 
   for(int i = 0; i < (int)x.size(); i++) {
-    if(x[i] < 0.025*max && x[i] > 0.025*min) {
+    if(x[i] < 0.025*max && x[i] > cclipping*min) {
       x[i] = 0.0F;
     }
   }
@@ -96,16 +100,16 @@ int main(int argc, const char *argv[]) {
   vector<float> f0_final(f0.size());
   vector<float> temp(3);
   int i;
-  f0_final[0] = f0[0];
   for(i = 1; i < (int)(f0.size() - 1); i++) {
     temp = {f0[i-1], f0[i], f0[i+1]};
     auto m = temp.begin() + temp.size()/2;
     std::nth_element(temp.begin(), m, temp.end());
     f0_final[i] = temp[temp.size()/2];
   }
-  f0_final[i] = f0[i];
+  f0_final[i] = f0_final[i-1];
+  f0_final[0] = f0_final[1];
   /// \DONE
-  /// Median filter computed
+  /// Non-recursive Median filter computed
 
   // Write f0 contour into the output file
   ofstream os(output_txt);

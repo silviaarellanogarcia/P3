@@ -73,7 +73,7 @@ Ejercicios básicos
       La regla de decisión se ha basado en 3 parámetros: la autocorrelación, la relación R(1)/R(0) y el valor de la potencia.
 
       ```c++
-      if(rmaxnorm>umaxnorm && r1norm > r1thr && pot > -53.0F) return false;
+      if(rmaxnorm>umaxnorm && r1norm > r1thr && pot > powthr) return false;
       return true;
       ```
 
@@ -159,19 +159,19 @@ Ejercicios de ampliación
   ```
    **Filtro de Mediana**
 
-  En nuestro caso, el filtro de mediana trabaja mejor con 3 valores. Eso ttiene sentido, pues hay fragmentos sonoros de la trama que son muy cortos, por lo que para que tenga efecto en ese caso es mejor comparar con muestras contiguas.
+  En nuestro caso, el filtro de mediana trabaja mejor con 3 valores. Eso tiene sentido, pues hay fragmentos sonoros de la trama que son muy cortos, por lo que para que tenga efecto en ese caso es mejor comparar con muestras contiguas.
   ``` c++
   vector<float> f0_final(f0.size());
   vector<float> temp(3);
   int i;
-  f0_final[0] = f0[0];
   for(i = 1; i < (int)(f0.size() - 1); i++) {
     temp = {f0[i-1], f0[i], f0[i+1]};
     auto m = temp.begin() + temp.size()/2;
     std::nth_element(temp.begin(), m, temp.end());
     f0_final[i] = temp[temp.size()/2];
   }
-  f0_final[i] = f0[i];
+  f0_final[i] = f0_final[i-1];
+  f0_final[0] = f0_final[1];
   ```
 
 
