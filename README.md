@@ -113,6 +113,9 @@ Ejercicios básicos
   * Optimice los parámetros de su sistema de estimación de pitch e inserte una tabla con las tasas de error
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
+  
+    El resultado final es el siguiente:
+    <img src="imgs/results.png" width="640" align="center">
 
 Ejercicios de ampliación
 ------------------------
