@@ -27,7 +27,8 @@ Usage:
 Options:
     -m FLOAT, --umaxnorm = FLOAT  Long-term autocorrelation threshold [default: 0.4]
     -r FLOAT, --r1norm = FLOAT  R(1)/R(0) autocorrelation threshold [default: 0.6]
-    -c FLOAT, --cclipping FLOAT  Center-clipping threshold in terms of max/min values [default: 0.025]
+    -1 FLOAT, --cclip1 FLOAT  Whole signal Center-clipping threshold [default: 0.025]
+    -2 FLOAT, --cclip2 FLOAT  Frame Center-clipping threshold [default: 0.008]
     -p FLOAT, --powthr FLOAT  Power threshold [default: -55]
     -h, --help  Show this screen
     --version   Show the version of the project
@@ -54,9 +55,9 @@ int main(int argc, const char *argv[]) {
 	std::string output_txt = args["<output-txt>"].asString();
   float umaxnorm = stof(args["--umaxnorm"].asString()); // Siempre accedemos con la key larga.
   float r1norm = stof(args["--r1norm"].asString());
-  float cclipping = stof(args["--cclipping"].asString());
+  float cclip1 = stof(args["--cclip1"].asString());
+  float cclip2 = stof(args["--cclip2"].asString());
   float powthr = stof(args["--powthr"].asString());
-  std::cout << r1norm;
 
   // Read input sound file
   unsigned int rate;
@@ -70,19 +71,17 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, umaxnorm, r1norm, powthr, PitchAnalyzer::HAMMING, 50, 500);
+  PitchAnalyzer analyzer(n_len, rate, umaxnorm, r1norm, powthr, cclip2, PitchAnalyzer::RECT, 50, 500);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
   
   float max = *std::max_element(x.begin(), x.end());
-  float min = *std::min_element(x.begin(), x.end());
-
   for(int i = 0; i < (int)x.size(); i++) {
-    if(x[i] < 0.025*max && x[i] > cclipping*min) {
+    if(abs(x[i]) < cclip1*max) {
       x[i] = 0.0F;
-    }
+    } 
   }
   /// \DONE
 

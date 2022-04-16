@@ -1,6 +1,7 @@
 /// @file
 
 #include <iostream>
+#include <fstream>
 #include <math.h>
 #include "pitch_analyzer.h"
 
@@ -84,6 +85,19 @@ namespace upc {
     //Compute pitch calcula la autocorrelación
     if (x.size() != frameLen)
       return -1.0F;
+
+    //Frame center-clipping
+    float max = *std::max_element(x.begin(), x.end());
+    for(int i = 0; i < (int)x.size(); i++) {
+      if(abs(x[i]) < cclip) {
+        x[i] = 0.0F;
+      }
+    }
+
+    //Frame normalization
+    max = *std::max_element(x.begin(), x.end());
+    for (int i = 0; i < (int)x.size(); i++)
+      x[i] /= max;
 
     //Window input frame
     for (unsigned int i=0; i<x.size(); ++i)

@@ -144,17 +144,15 @@ Ejercicios de ampliación
 
   Se han implementado dos mejoras: un filtro de center-clipping y un filtro de mediana.
 
-  **Center Clipping**
-  No se haa realizado con un valor fijo, igual para todas las señales, sino que se adapta dependiendo de la potencia mínima y máxima de cada una.
+  **Center Clipping sin offset**
+  No se haa realizado con un valor fijo, igual para todas las señales, sino que se adapta dependiendo de la potencia máxima de cada una. Aplicamos un center-clipping sin offset porque en nuestro caso obtenemos unos resultados mejores.
 
   ``` c++
   float max = *std::max_element(x.begin(), x.end());
-  float min = *std::min_element(x.begin(), x.end());
-
   for(int i = 0; i < (int)x.size(); i++) {
-    if(x[i] < 0.025*max && x[i] > 0.025*min) {
+    if(abs(x[i]) < cclip1*max) {
       x[i] = 0.0F;
-    }
+    } 
   }
   ```
    **Filtro de Mediana**
