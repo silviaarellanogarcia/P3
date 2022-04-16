@@ -93,11 +93,21 @@ Ejercicios básicos
 	    Recuerde configurar los paneles de datos para que el desplazamiento de ventana sea el adecuado, que
 		en esta práctica es de 15 ms.
 
+        <img src="imgs/medidas.png" width="640" align="center">
+        <img src="imgs/wavesurfer.png" width="640" align="center">
+        Las gráficas hacen referencia al nivel de potencia de la señal
+		(r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]), el valor de la
+		autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]) y el estimador de pitch implementado en el programa wavesurfer, respectivamente. Observamos que valores altos de estos parámetros corresponden a tramos sonoros.
+
       - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare
 	    su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica
 		ilustrativa del resultado de ambos estimadores.
-     
-		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
+
+        <img src="imgs/wavesurfer.png" width="640" align="center">
+        <img src="imgs/output.png" width="640" align="center">
+        Podemos observar que el estimador de pitch realizado es bastante preciso, ya que el contorno de pitch obtenido es prácticamente igual al del estimador de wavesurfer.
+ 
+	Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
 	 	el uso de alternativas de mayor calidad (particularmente Python).
   
   * Optimice los parámetros de su sistema de estimación de pitch e inserte una tabla con las tasas de error
