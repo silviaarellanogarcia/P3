@@ -95,7 +95,8 @@ Ejercicios básicos
 
         <img src="imgs/medidas.png" width="640" align="center">
         <img src="imgs/wavesurfer.png" width="640" align="center">
-       Las gráficas hacen referencia al nivel de potencia de la señal
+       
+        Las gráficas hacen referencia al nivel de potencia de la señal
 		(r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]), el valor de la
 		autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]) y el estimador de pitch implementado en el programa wavesurfer, respectivamente. Observamos que valores altos de estos parámetros corresponden a tramos sonoros.
 
@@ -158,7 +159,7 @@ Ejercicios de ampliación
   Se han implementado dos mejoras: un filtro de center-clipping y un filtro de mediana.
 
   **Center Clipping sin offset**
-  No se haa realizado con un valor fijo, igual para todas las señales, sino que se adapta dependiendo de la potencia máxima de cada una. Aplicamos un center-clipping sin offset porque en nuestro caso obtenemos unos resultados mejores.
+  No se ha realizado con un valor fijo, igual para todas las señales, sino que se adapta dependiendo de la potencia máxima de cada una. Aplicamos un center-clipping sin offset porque en nuestro caso obtenemos unos resultados mejores.
 
   ``` c++
   float max = *std::max_element(x.begin(), x.end());
