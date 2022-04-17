@@ -118,6 +118,8 @@ Ejercicios básicos
     El resultado final es el siguiente:
     <img src="imgs/results.png" width="640" align="center">
 
+    Nota: Se ha implementado el método de la ventana de Hamming pero finalmente se ha optado por usar la ventana rectangular puesto que da un mejor resultado.
+
 Ejercicios de ampliación
 ------------------------
 
@@ -159,6 +161,7 @@ Ejercicios de ampliación
   Se han implementado dos mejoras: un filtro de center-clipping y un filtro de mediana.
 
   **Center Clipping sin offset**
+
   No se ha realizado con un valor fijo, igual para todas las señales, sino que se adapta dependiendo de la potencia máxima de cada una. Aplicamos un center-clipping sin offset porque en nuestro caso obtenemos unos resultados mejores.
 
   ``` c++
