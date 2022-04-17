@@ -44,6 +44,14 @@ int main(int argc, const char *argv[]) {
 	/// \TODO 
 	///  Modify the program syntax and the call to **docopt()** in order to
 	///  add options and arguments to the program.
+
+  /// \DONE
+  /// The following parameters have been included:
+  /// - umaxnorm
+  /// - r1norm
+  /// - center clipping 1 (cclip1)
+  /// - center clipping 2 (cclip2)
+  /// - power threshold (powthr)
   
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
         {argv + 1, argv + argc},	// array of arguments, without the program name
@@ -84,6 +92,7 @@ int main(int argc, const char *argv[]) {
     } 
   }
   /// \DONE
+  /// A center clipping filter has been computed.
 
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
